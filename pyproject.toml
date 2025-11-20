@@ -1,0 +1,12 @@
+[project]
+name = "a2fs"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fusepy>=3.0.1",
+]
+
+[project.scripts]
+a2fs = "a2fs.main:main"
