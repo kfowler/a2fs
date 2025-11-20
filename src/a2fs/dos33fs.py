@@ -37,16 +37,35 @@ class AppleDOS33FS(Operations):
 
     def _read_sector(self, track, sector):
         """Read a 256-byte sector from the disk image"""
+        if track < 0 or track >= 35:
+            raise ValueError(f"Invalid track: {track}")
+        if sector < 0 or sector >= 16:
+            raise ValueError(f"Invalid sector: {sector}")
+
         offset = (track * 16 + sector) * 256
         self.fd.seek(offset)
-        return self.fd.read(256)
+        data = self.fd.read(256)
+
+        if len(data) != 256:
+            raise IOError(f"Failed to read full sector T{track}S{sector}: got {len(data)} bytes")
+
+        return data
 
     def _parse_catalog(self):
         """Parse the DOS 3.3 catalog to build file directory"""
         # VTOC is at T17, S0
         vtoc = self._read_sector(17, 0)
+
+        # Validate VTOC and get catalog location
         catalog_track = vtoc[1]
         catalog_sector = vtoc[2]
+
+        # Sanity check: catalog track/sector must be valid
+        if catalog_track == 0 or catalog_track >= 35 or catalog_sector >= 16:
+            # VTOC appears corrupted or this is not a standard DOS 3.3 disk
+            # Fall back to standard catalog location
+            catalog_track = 17
+            catalog_sector = 15
 
         current_track = catalog_track
         current_sector = catalog_sector
