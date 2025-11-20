@@ -14,5 +14,3 @@ wheels/
 mnt/
 disks/
 *.dsk
-inspect_dsk.py
-main.py

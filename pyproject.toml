@@ -9,4 +9,4 @@ dependencies = [
 ]
 
 [project.scripts]
-a2fs = "a2fs.main:main"
+a2fs = "a2fs.dos33fs:main"
